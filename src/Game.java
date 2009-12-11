@@ -1,74 +1,62 @@
 /* Import libraries */
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Stack;
-
+import java.util.Scanner;
 
 public class Game extends Thread {
 	
-	private BufferedReader reader;
+	private int stacks;
+	private int gametype;
+	private int aitype;
+	private Scanner scanner;
 	private String inputBuffer;
-	private int valinta;
+	
 	Stack<String> stack;
 	Stack<String> stack2;
 	Stack<String> stack3;
 	Stack<String> stack4;
+	
 	ArrayList<Stack<String>> stackarray;
+	
 	Random rand;
 	
 	public Game() {
 	
-		reader = new BufferedReader(new InputStreamReader(System.in)); /* User input reader */
+		scanner = new Scanner(System.in); /* User input reader */
 		stackarray = new ArrayList<Stack<String>>(10); /* Array for storing n number of stacks */
 		rand = new Random(); /* Random generator */
+		stacks = rand.nextInt(5) + 2; /* Random number of stacks, min 2, max 7 */
+		aitype = rand.nextInt(1) + 1; /* Random AI player profile (options 1,2) */
 		
 	}//parseInput
-	public int option() {
-		return valinta;
-	}//option
 	
 	public String readInput() { /* User Input Reader */
-		/*
-		try {
-			reader.skip(System.in.available()); // Only allows input when user can type
-		}//try
-		catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}//catch*/
+
+		inputBuffer = scanner.next();
 		
-		try {
-			inputBuffer = reader.readLine();
-		}//try
-		catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}//catch
+		//inputBuffer.trim();
 		
 		return inputBuffer;
 	}//readinput
 	
-	public void gameChoice() {
-
+	public int gameChoice() { /* Select between two game modes */
 		
 		if(readInput().equals("1")) {
 			System.out.println("Normal game");
-			valinta = 1;
+			gametype = 1;
 			}//if
 		
 		else if(readInput().equals("2")) {
 			System.out.println("Misére game");
-			valinta = 2;
+			gametype = 2;
 		}//else if
+		return gametype;
 	}//gameChoice
 	
-	public void randomizeStacks() {
+	public void randomizeStacks() { /* Shuffle the stacks to have random rumber of objects */
 		
-		for(int i = 0; i<rand.nextInt(5)+2; i++) { /* Min 2, Max 7 Stacks generated */
+		for(int i = 0; i<stacks; i++) { 
 			
 			Stack<String> p = new Stack<String>();
 			
@@ -77,10 +65,7 @@ public class Game extends Thread {
 			}//for
 			
 			stackarray.add(p);
-			
 		}//for
-		
-
 		
 	}//randomizeStacks
 	
@@ -95,7 +80,6 @@ public class Game extends Thread {
 	//			System.out.println(stackarray.get(j));
 	//		}//for
 
-		
 		
 		for(i=10; i>=0; i--) {
 			stackBuffer = ""; /* Empty buffer */
@@ -120,14 +104,14 @@ public class Game extends Thread {
 
 	}//printStacks
 	
-	public void popStack(int n) {
+	public void popStack(int n) { /* Removes an object from stack if there is any */
 		
 		if(stackarray.get(n).size() > 0) {
 			stackarray.get(n).pop();
 		}//if
 	}//popStack
 	
-	public void userTurn() {
+	public void userTurn() { /* Lets user remove objects from stacks */
 		
 		if(readInput().equals("a")) {
 			popStack(0);}//if
@@ -142,21 +126,39 @@ public class Game extends Thread {
 		else if(readInput().equals("exit")) {
 			System.exit(0);
 		}//else if
+		if(checkWin() == 1) {
+			System.out.println("You have lost.");
+			System.exit(0);
+		}//if
 		
 	}//userTurn
+	public int checkWin() { /* Determines if user or computer has lost/won the game */	
+		int empty = 0;
+		
+		for(int i=0; i<stacks; i++) {
+			if(stackarray.get(i).size() == 0) {
+				empty++;
+			}//if	
+		}//for
+		
+		if(empty == stacks) { /* If all stacks all empty, return 1 */
+			return 1;
+		}//if
+		else {
+			return 0; /* Else, the game continues */
+		}//else
+		
+	}//checkWin
 	
 	public void run() { //thread
 	
 		while(!this.isInterrupted()) {
 			
-
+			System.out.println("-------");
 			printStacks();
 			userTurn();
-			printStacks();
+			//printStacks();
 			//aiTurn();
-			
-
-
 
 		}//while
 	}//run
