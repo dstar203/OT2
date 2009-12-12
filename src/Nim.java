@@ -1,24 +1,19 @@
 
 public class Nim {  // main class which contains the main function
 
-
-	
 	public static void main(String[] args) { // main function, which starts the game
 		
-		int gamemode;
-		Game peli = new Game();
-		
-		System.out.println("Nim v.0.03 - 11.12.2009");
-		System.out.println("-----------------------");
-		System.out.println("Valitse pelimuoto:");
-		System.out.println("1 = Normaali, 2 = Misére");
-		
+		int mode;
 		
 		//UI ui = new UI();
 		
-		gamemode = peli.gameChoice();
-		peli.randomizeStacks();
+		Start alku = new Start(); /* Initialize start-up */
+		alku.gameInfo(); /* Print info about the game */
+		mode = alku.gameChoice(); /* Select game mode, default = 1 */ 
+		Game peli = new Game(mode); /* Initialize game */
+		peli.randomizeStacks(); /* Shuffle stacks */
 		peli.start();
 		
 	}//main
+	
 }//Nim

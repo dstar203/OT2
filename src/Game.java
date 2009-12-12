@@ -7,8 +7,9 @@ import java.util.Scanner;
 public class Game extends Thread {
 	
 	private int stacks;
-	private int gametype;
+	private int gamemode;
 	private int aitype;
+	private int turn;
 	private Scanner scanner;
 	private String inputBuffer;
 	
@@ -21,13 +22,15 @@ public class Game extends Thread {
 	
 	Random rand;
 	
-	public Game() {
+	public Game(int mode) {
 	
 		scanner = new Scanner(System.in); /* User input reader */
 		stackarray = new ArrayList<Stack<String>>(10); /* Array for storing n number of stacks */
 		rand = new Random(); /* Random generator */
 		stacks = rand.nextInt(5) + 2; /* Random number of stacks, min 2, max 7 */
 		aitype = rand.nextInt(1) + 1; /* Random AI player profile (options 1,2) */
+		turn = 1;
+		this.gamemode = mode;
 		
 	}//parseInput
 	
@@ -39,20 +42,6 @@ public class Game extends Thread {
 		
 		return inputBuffer;
 	}//readinput
-	
-	public int gameChoice() { /* Select between two game modes */
-		
-		if(readInput().equals("1")) {
-			System.out.println("Normal game");
-			gametype = 1;
-			}//if
-		
-		else if(readInput().equals("2")) {
-			System.out.println("Misére game");
-			gametype = 2;
-		}//else if
-		return gametype;
-	}//gameChoice
 	
 	public void randomizeStacks() { /* Shuffle the stacks to have random rumber of objects */
 		
@@ -113,25 +102,43 @@ public class Game extends Thread {
 	
 	public void userTurn() { /* Lets user remove objects from stacks */
 		
-		if(readInput().equals("a")) {
-			popStack(0);}//if
-		else if(readInput().equals("b")) {
-			popStack(1); }//else if
-		else if(readInput().equals("c")) {
-			popStack(2);}//else if
-		else if(readInput().equals("d")) {
-			popStack(3);}//else if
-		else if(readInput().equals("e")) {
-			popStack(4);}//else if
-		else if(readInput().equals("exit")) {
-			System.exit(0);
-		}//else if
-		if(checkWin() == 1) {
-			System.out.println("You have lost.");
-			System.exit(0);
-		}//if
+		boolean flag = false;
+		String buffer;
+		
+		while(flag != true) {
+			
+			System.out.println("Turn " + turn);
+			System.out.println("-------");
+			printStacks();
+			buffer = readInput();
+			
+			if(buffer.equals("a")) {
+				popStack(0);}//if
+			else if(buffer.equals("b")) {
+				popStack(1); }//else if
+			else if(buffer.equals("c")) {
+				popStack(2);}//else if
+			else if(buffer.equals("d")) {
+				popStack(3);}//else if
+			else if(buffer.equals("e")) {
+				popStack(4);}//else if
+			else if(buffer.equals("f")) {
+				popStack(5);}//else if
+			else if(buffer.equals("g")) {
+				popStack(6);}//else if
+			else if(buffer.equals("exit")) {
+				System.exit(0);}//else if
+			else if(buffer.equals("turn")) {
+				flag = true;}//else if
+			
+			if(checkWin() == 1) {
+				System.out.println("You have lost.");
+				System.exit(0);
+			}//if
+		}//while
 		
 	}//userTurn
+	
 	public int checkWin() { /* Determines if user or computer has lost/won the game */	
 		int empty = 0;
 		
@@ -150,13 +157,17 @@ public class Game extends Thread {
 		
 	}//checkWin
 	
+	public void updateScores() {
+		/* Print highscores to screen and update them to a file */
+		
+	}//updateScores
+	
 	public void run() { //thread
 	
 		while(!this.isInterrupted()) {
 			
-			System.out.println("-------");
-			printStacks();
 			userTurn();
+			turn++;
 			//printStacks();
 			//aiTurn();
 
