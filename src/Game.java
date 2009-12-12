@@ -151,9 +151,14 @@ public class Game extends Thread {
 				selectedstack = 6;	
 			}//else if
 			else if(buffer.equals("exit")) {
-				System.exit(0);}//else if
-			else if(buffer.equals("turn") && selected == true) {
-				flag = true;}//else if
+				System.exit(0);
+			}//else if
+			else if(buffer.equals("turn") && (selected == true || turn == 1)) {
+				flag = true;
+				if(turn == 1) { // Turn correction if computer begins
+					turn = 0;
+				}
+			}//else if
 			
 			if(checkWin() == 1) {
 				System.out.println("You have lost.");
@@ -191,21 +196,48 @@ public class Game extends Thread {
 	}//aiTurn
 	
 	public int checkWin() { /* Determines if user or computer has lost/won the game */	
-		int empty = 0;
 		
-		for(int i=0; i<stacks; i++) {
-			if(stackarray.get(i).size() == 0) {
-				empty++;
-			}//if	
-		}//for
+		if(gamemode == 1) { /* Normal game */
+			
+			int empty = 0; //Number of empty stacks
+			int hasOne = 0; //Number of stacks with one object
 		
-		if(empty == stacks) { /* If all stacks all empty, return 1 */
-			return 1;
+			for(int i=0; i<stacks; i++) { // Analyze stacks
+				if(stackarray.get(i).size() == 0) {
+					empty++;
+				}//if
+				else if(stackarray.get(i).size() == 1) {
+						hasOne++;
+				}//else if
+			}//for
+		
+			if(empty == stacks-1 && hasOne == 1) { /* If all but one stack is empty and the stack has one, the next player has lost */
+				return 2;
+			}//if
+			else if(empty == stacks) { // If all stacks are empty, current player has lost */
+				return 1;
+			}//else if
+			else {
+				return 0; /* Else, the game continues */
+			}//else
 		}//if
-		else {
-			return 0; /* Else, the game continues */
-		}//else
+		else { /* Misere game */
+			int empty = 0;
+			
+			for(int i=0; i<stacks; i++) {
+				if(stackarray.get(i).size() == 0) {
+					empty++;
+				}//if	
+			}//for
 		
+			if(empty == stacks) { /* If all stacks all empty, return 1 */
+				return 1;
+			}//if
+			else {
+				return 0; /* Else, the game continues */
+			}//else
+			
+		}
 	}//checkWin
 	
 	public void updateScores() {
@@ -223,6 +255,10 @@ public class Game extends Thread {
 				System.out.println("You have lost.");
 				System.exit(0);
 			}//if
+			else if(checkWin() == 2) {
+				System.out.println("You won.");
+				System.exit(0);
+			}//else if
 			
 			turn++;
 			
@@ -232,6 +268,10 @@ public class Game extends Thread {
 				System.out.println("You won.");
 				System.exit(0);
 			}//if
+			else if(checkWin() == 2) {
+				System.out.println("You have lost.");
+				System.exit(0);
+			}//else if
 			
 			turn++;
 			

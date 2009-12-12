@@ -23,7 +23,7 @@ public class Start {
 	}//readinput
 	
 	public void gameInfo() {
-		System.out.println("Nim v.0.15 - 12.12.2009");
+		System.out.println("Nim v.0.17 - 12.12.2009");
 		System.out.println("-----------------------");
 		System.out.println("Valitse pelimuoto:");
 		System.out.println("1 = Normaali, 2 = Misére");
