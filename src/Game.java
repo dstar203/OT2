@@ -8,7 +8,7 @@ public class Game extends Thread {
 	
 	private int stacks;
 	private int gamemode;
-	private int aitype;
+	private int aimode;
 	private int turn;
 	private Scanner scanner;
 	private String inputBuffer;
@@ -28,7 +28,7 @@ public class Game extends Thread {
 		stackarray = new ArrayList<Stack<String>>(10); /* Array for storing n number of stacks */
 		rand = new Random(); /* Random generator */
 		stacks = rand.nextInt(5) + 2; /* Random number of stacks, min 2, max 7 */
-		aitype = rand.nextInt(1) + 1; /* Random AI player profile (options 1,2) */
+		aimode = rand.nextInt(1) + 1; /* Random AI player profile (options 1,2) */
 		turn = 1;
 		this.gamemode = mode;
 		
@@ -103,7 +103,10 @@ public class Game extends Thread {
 	public void userTurn() { /* Lets user remove objects from stacks */
 		
 		boolean flag = false;
+		boolean selected = false;
+		int selectedstack = -1;
 		String buffer;
+
 		
 		while(flag != true) {
 			
@@ -112,23 +115,44 @@ public class Game extends Thread {
 			printStacks();
 			buffer = readInput();
 			
-			if(buffer.equals("a")) {
-				popStack(0);}//if
-			else if(buffer.equals("b")) {
-				popStack(1); }//else if
-			else if(buffer.equals("c")) {
-				popStack(2);}//else if
-			else if(buffer.equals("d")) {
-				popStack(3);}//else if
-			else if(buffer.equals("e")) {
-				popStack(4);}//else if
-			else if(buffer.equals("f")) {
-				popStack(5);}//else if
-			else if(buffer.equals("g")) {
-				popStack(6);}//else if
+			if(buffer.equals("a") && (selected == false || selectedstack == 0)) {
+				popStack(0);
+				selected = true;
+				selectedstack = 0;
+			}//if
+			else if(buffer.equals("b") && (selected == false || selectedstack == 1 )) {
+				popStack(1);
+				selected = true;
+				selectedstack = 1;
+			}//else if
+			else if(buffer.equals("c") && (selected == false || selectedstack == 2)) {
+				popStack(2);
+				selected = true;
+				selectedstack = 2;
+			}//else if
+			else if(buffer.equals("d") && (selected == false || selectedstack == 3)) {
+				popStack(3);
+				selected = true;
+				selectedstack = 3;
+			}//else if
+			else if(buffer.equals("e") && (selected == false || selectedstack == 4)) {
+				popStack(4);
+				selected = true;
+				selectedstack = 4;	
+			}//else if
+			else if(buffer.equals("f") && (selected == false || selectedstack == 5)) {
+				popStack(5);
+				selected = true;
+				selectedstack = 5;	
+			}//else if
+			else if(buffer.equals("g") && (selected == false || selectedstack == 6)) {
+				popStack(6);
+				selected = true;
+				selectedstack = 6;	
+			}//else if
 			else if(buffer.equals("exit")) {
 				System.exit(0);}//else if
-			else if(buffer.equals("turn")) {
+			else if(buffer.equals("turn") && selected == true) {
 				flag = true;}//else if
 			
 			if(checkWin() == 1) {
@@ -138,6 +162,33 @@ public class Game extends Thread {
 		}//while
 		
 	}//userTurn
+	
+	public void aiTurn() { /* Random ai */
+		
+		boolean empty = true;
+		int randomstack = 0;
+		int randomamount = 1;
+		
+		while(empty == true) { /* search for random stack as long as nonempty stack is found */
+			randomstack = rand.nextInt(stackarray.size()); /* random stack */
+			
+			if(stackarray.get(randomstack).size() > 0) {
+				empty = false;
+			}//if
+			
+		}//while
+		
+		randomamount = rand.nextInt(stackarray.get(randomstack).size()) +1; /* random amount, 1 - stacksize */
+		
+		for(int i=0; i<randomamount; i++) {
+			popStack(randomstack);
+		}//for
+		
+		//if(aimode == 1 && gamemode ==1 ) {
+			
+		//}
+		
+	}//aiTurn
 	
 	public int checkWin() { /* Determines if user or computer has lost/won the game */	
 		int empty = 0;
@@ -167,7 +218,23 @@ public class Game extends Thread {
 		while(!this.isInterrupted()) {
 			
 			userTurn();
+			
+			if(checkWin() == 1) {
+				System.out.println("You have lost.");
+				System.exit(0);
+			}//if
+			
 			turn++;
+			
+			aiTurn();
+			
+			if(checkWin() == 1) {
+				System.out.println("You won.");
+				System.exit(0);
+			}//if
+			
+			turn++;
+			
 			//printStacks();
 			//aiTurn();
 
