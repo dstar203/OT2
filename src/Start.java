@@ -1,45 +1,32 @@
-import java.util.Scanner;
-
-
+/**
+ * 
+ * Game starter class
+ *
+ */
 public class Start {
 
-	int mode;
-	Scanner scanner;
-	String inputBuffer;
-	
+	private int mode;
+	ConsoleUI ui;
+	/**
+	 * Class constructor
+	 */
 	public Start() {
-		
-		mode = 1; // Default mode is normal game
-		scanner = new Scanner(System.in);
-	}//begin
+		mode = 1; // default normal game
+		ui = new ConsoleUI();
+	}
 	
-	public String readInput() { /* User Input Reader */
-
-		inputBuffer = scanner.next();
-		
-		//inputBuffer.trim();
-		
-		return inputBuffer;
-	}//readinput
 	
-	public void gameInfo() {
-		System.out.println("Nim v.0.17 - 12.12.2009");
-		System.out.println("-----------------------");
-		System.out.println("Valitse pelimuoto:");
-		System.out.println("1 = Normaali, 2 = Misére");
-	}//gameinfo
-	public int gameChoice() { /* Select between two game modes */
-		
-		if(readInput().equals("1")) {
-			System.out.println("Normal game");
-			mode = 1;
-			}//if
-		
-		else if(readInput().equals("2")) {
-			System.out.println("Misére game");
-			mode = 2;
-		}//else if
-		return mode;
-	}//gameChoice
 
-}//class
+	public void begin() {
+		ui.println("Choose gamemode:");
+		ui.println("1 = Normal, 2 = Misére");
+		
+		mode = ui.gameChoice(); // Select game mode, default = 1 
+		Game peli = new Game(mode);
+		peli.randomizeStacks(); // Shuffle stacks
+		peli.start(); // Start game thread
+		
+	}
+
+
+}
